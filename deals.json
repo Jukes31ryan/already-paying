@@ -1,0 +1,186 @@
+{
+  "updated": "2026-10-13",
+  "assumptions": "Savings use conservative typical bills: phone $120/mo, car insurance $2,000/yr, gear $200-300/yr. Your real number depends on your bill.",
+  "deals": [
+    {
+      "id": "verizon", "brand": "Verizon Wireless", "category": "Phone", "layer": "everyday",
+      "discount": "10% off personal Unlimited lines; 25% off accessories online",
+      "savings": {"type": "yearly", "amount": 144, "assumes": "$120/mo plan × 10%"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "check"},
+      "steps": ["Open Verizon's first responder page and tap Check eligibility", "Verify with ID.me (badge photo, pay stub or agency letter)", "Discount shows on your bill in 1–2 cycles"],
+      "gotcha": "Active, retired and volunteer responders qualify. Can't stack with military, nurse or teacher discounts. May re-verify.",
+      "link": "https://www.verizon.com/featured/first-responders/", "source": "official", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "att", "brand": "AT&T Wireless (FirstNet & Family)", "category": "Phone", "layer": "everyday",
+      "discount": "10–20% off unlimited lines, depending on plan",
+      "savings": {"type": "yearly", "amount": 144, "assumes": "$120/mo plan × 10%"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "yes", "family": "yes", "federal": "yes"},
+      "steps": ["Check eligibility on AT&T's FirstNet & Family page", "One person on the account must be a verified FirstNet user", "Credits start within about 3 bills"],
+      "gotcha": "Needs a FirstNet-capable phone and SIM. Federal, career and volunteer responders qualify. Retirees use AT&T's separate retired-responder offer.",
+      "link": "https://www.att.com/poeportal/selfassessment/firstresponders", "source": "official", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "tmobile", "brand": "T-Mobile", "category": "Phone", "layer": "everyday",
+      "discount": "First Responder pricing on Magenta plans (about 6–10% per comparison sites)",
+      "savings": {"type": "yearly", "amount": 86, "assumes": "$120/mo plan × 6%"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "yes", "family": "no", "federal": "no"},
+      "steps": ["Log in to T-Mobile.com or T-Life", "Profile → First Responder Verification", "Upload an ID, recent pay stub or agency letter if asked"],
+      "gotcha": "State and local only: federal agencies are not eligible. Verify within 45 days or the line can go up to $20/mo. Re-verify every year.",
+      "link": "https://www.t-mobile.com/support/plans-features/first-responder-verification", "source": "official", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "fios", "brand": "Verizon Fios Home Internet", "category": "Internet", "layer": "everyday",
+      "discount": "First responder pricing, Fios 300 from about $26/mo with AutoPay",
+      "savings": {"type": "varies", "amount": 0, "assumes": "Depends on your area and current plan"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "check"},
+      "steps": ["Open Verizon's first responder page", "Verify with ID.me", "Pick a Fios plan; the discount applies at the last step of the order"],
+      "gotcha": "Only where Fios is available. A $99 setup fee may apply.",
+      "link": "https://www.verizon.com/featured/first-responders/", "source": "official", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "geico", "brand": "GEICO", "category": "Car insurance", "layer": "everyday", "fedOnly": true,
+      "discount": "Federal employee discount and premium reductions",
+      "savings": {"type": "varies", "amount": 0, "assumes": "GEICO doesn't publish the amount; it varies by state"},
+      "qualifies": {"le": "no", "fire": "no", "ems": "no", "dispatch": "no", "family": "check", "federal": "yes"},
+      "steps": ["Call GEICO or open your policy online", "Say: \"I'm a federal employee. Please add the federal employee discount.\"", "Ask them to re-quote with it applied"],
+      "gotcha": "For federal employees, not state or local. Ask whether it stacks with your other discounts.",
+      "link": "https://www.geico.com/save/discounts/", "source": "official", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "liberty", "brand": "Liberty Mutual", "category": "Car insurance", "layer": "everyday",
+      "discount": "Up to 12% through IAFF and FOP partnerships",
+      "savings": {"type": "yearly", "amount": 100, "assumes": "$2,000/yr policy × 5%"},
+      "qualifies": {"le": "check", "fire": "check", "ems": "check", "dispatch": "check", "family": "check", "federal": "check"},
+      "steps": ["Call Liberty Mutual or your agent", "Ask for the first responder or FOP / IAFF member discount", "Have your membership info ready"],
+      "gotcha": "Tied to union or FOP membership. Amount from a comparison site, not Liberty Mutual's own page.",
+      "link": "https://www.thezebra.com/car-insurance-first-responders/", "source": "secondary", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "farmers", "brand": "Farmers", "category": "Car insurance", "layer": "everyday",
+      "discount": "About 8% for members of approved occupation groups",
+      "savings": {"type": "yearly", "amount": 160, "assumes": "$2,000/yr policy × 8%"},
+      "qualifies": {"le": "check", "fire": "check", "ems": "check", "dispatch": "check", "family": "check", "federal": "check"},
+      "steps": ["Call your Farmers agent", "Ask whether your agency or job is an approved affinity group", "Ask for a re-quote with the discount"],
+      "gotcha": "Group lists vary by state. Amount from a comparison site.",
+      "link": "https://www.autoinsurance.org/first-responder-auto-insurance-discount", "source": "secondary", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "aaa", "brand": "AAA Insurance", "category": "Car insurance", "layer": "everyday",
+      "discount": "Up to about 15% for first responders, depending on your club",
+      "savings": {"type": "yearly", "amount": 100, "assumes": "$2,000/yr policy × 5%"},
+      "qualifies": {"le": "check", "fire": "check", "ems": "check", "dispatch": "check", "family": "check", "federal": "check"},
+      "steps": ["Call your regional AAA club", "Ask for the first responder insurance discount", "Ask whether it stacks with your member discount"],
+      "gotcha": "Each AAA club sets its own discounts. Amount from a comparison site.",
+      "link": "https://www.autoinsurance.org/first-responder-auto-insurance-discount", "source": "secondary", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "simplisafe", "brand": "SimpliSafe", "category": "Home security", "layer": "everyday",
+      "discount": "50% off a new system (Protectors Program)",
+      "savings": {"type": "onetime", "amount": 150, "assumes": "$300 system × 50%"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "check"},
+      "steps": ["Go to SimpliSafe.com/Protectors", "Pick your status and tap Receive 50% Off", "Verify with VerifyPass and use the one-time code at checkout"],
+      "gotcha": "New system purchases only. Monitoring plan isn't discounted. Can't combine with other promos.",
+      "link": "https://support.simplisafe.com/articles/orders-warranty/simplisafe-protectors-program/6500658dbe68590665e6bcef", "source": "official", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "ring", "brand": "Ring", "category": "Home security", "layer": "everyday",
+      "discount": "20% off select Ring.com purchases",
+      "savings": {"type": "onetime", "amount": 40, "assumes": "$200 order × 20%"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "check"},
+      "steps": ["Open Ring's first responder discount page", "Verify your status", "Buy on Ring.com with the discount applied"],
+      "gotcha": "Ring's page doesn't say the subscription plan is covered. Can't combine with other Ring discounts.",
+      "link": "https://ring.com/collections/ring-military-first-responder-student-teacher-discount", "source": "official", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "arlo", "brand": "Arlo", "category": "Home security", "layer": "everyday",
+      "discount": "25% off for first responders, verified with ID.me",
+      "savings": {"type": "yearly", "amount": 30, "assumes": "$120/yr subscription × 25%"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "check"},
+      "steps": ["Open Arlo's discounts page", "Verify with ID.me", "Ask support to apply it to an existing subscription if needed"],
+      "gotcha": "Confirmed by Arlo staff on its forum, not its main page. Some users report trouble getting it on existing subscriptions.",
+      "link": "https://community.arlo.com/t5/Arlo-Smart/Arlo-discounts/m-p/1901095", "source": "secondary", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "stellantis", "brand": "Dodge · Jeep · Ram", "category": "Vehicle", "layer": "more",
+      "discount": "$500 off select new Dodge, Jeep and Ram models",
+      "savings": {"type": "onetime", "amount": 500, "assumes": "Flat $500 when you buy or lease"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "yes", "family": "check", "federal": "yes"},
+      "steps": ["Open the Stellantis first responder page and tap Get Authorization Number", "Verify through their third-party service", "Give the number to any franchised dealer"],
+      "gotcha": "Select models only. Federal LEOs and 911 dispatchers are named as eligible. Spouses only in some cases.",
+      "link": "https://dodge.com/incentives/first-responder.html", "source": "official", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "gm", "brand": "Chevy · GMC · Buick · Cadillac", "category": "Vehicle", "layer": "more",
+      "discount": "First Responder Discount on select vehicles, plus up to 20% off OnStar",
+      "savings": {"type": "varies", "amount": 0, "assumes": "GM doesn't list the vehicle amount"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "check"},
+      "steps": ["Confirm eligibility at gmfirstresponderdiscount.com", "Get your authorization number", "Bring it to the dealer; push the blue OnStar button for that discount"],
+      "gotcha": "Select vehicles only. Check the amount with the dealer before you negotiate.",
+      "link": "https://onstar.com/public-safety/honored-to-serve", "source": "official", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "ford", "brand": "Ford", "category": "Vehicle", "layer": "more",
+      "discount": "$500 Bonus Cash on eligible Ford vehicles",
+      "savings": {"type": "onetime", "amount": 500, "assumes": "Flat $500 when you buy"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "no", "federal": "check"},
+      "steps": ["Register at fordspecialoffer.com/firstresponders", "Verify instantly through First Responder ID", "Give the certificate number to the dealer"],
+      "gotcha": "Active first responders only, not retirees. Source is a police association page, so confirm with the dealer.",
+      "link": "https://napo.org/membership/ford-rebate-program", "source": "secondary", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "samsung", "brand": "Samsung", "category": "Phones & TVs", "layer": "more",
+      "discount": "Up to 30% off phones, TVs and appliances",
+      "savings": {"type": "onetime", "amount": 80, "assumes": "$800 phone × 10% (conservative)"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "no", "federal": "yes"},
+      "steps": ["Open Samsung's first responder offer page", "Create a Samsung Account and verify with ID.me (or a .gov email)", "Shop signed in; discount shows at checkout"],
+      "gotcha": "Limit of 2 products per category per year. Stacks with public sales.",
+      "link": "https://www.samsung.com/us/shop/offer-program/first-responders/", "source": "official", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "whoop", "brand": "WHOOP", "category": "Fitness", "layer": "more",
+      "discount": "10% off annual or 24-month memberships",
+      "savings": {"type": "onetime", "amount": 20, "assumes": "$200 membership × 10%"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "no", "federal": "check"},
+      "steps": ["Start a new prepaid annual or 24-month membership", "Verify with ID.me at checkout"],
+      "gotcha": "New members only. Not for monthly plans or renewals.",
+      "link": "https://www.community.whoop.com/t/are-there-any-discounts-for-military-servicemembers-or-first-responders/104", "source": "secondary", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "nike", "brand": "Nike", "category": "Apparel & boots", "layer": "more",
+      "discount": "10% off most items online and in the Nike App",
+      "savings": {"type": "yearly", "amount": 30, "assumes": "$300/yr × 10%"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "no", "federal": "check"},
+      "steps": ["Sign in as a Nike Member", "Verify with SheerID (name, agency, status)", "Use the single-use code at checkout"],
+      "gotcha": "Online only, first $500 of an order, one code every 7 days. Excludes SNKRS launches and gift cards.",
+      "link": "https://www.nike.com/help/a/first-responder-discount", "source": "official", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "underarmour", "brand": "Under Armour", "category": "Apparel & boots", "layer": "more",
+      "discount": "About 20% off, with seasonal 40% events",
+      "savings": {"type": "yearly", "amount": 40, "assumes": "$200/yr × 20%"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "check"},
+      "steps": ["Open Under Armour's first responder page", "Verify with ID.me", "Discount applies at checkout"],
+      "gotcha": "Amount changes by season. Reported by deal sites; couldn't open UA's own page to confirm.",
+      "link": "https://www.westfield.com/en/united-states/montgomery/retailers/offers/under-armour-20percent-off-discount-military-first-responders-and-healthcare-workers/200325", "source": "secondary", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "springfield", "brand": "Springfield Armory FIRSTLINE", "category": "Firearms & ammo", "layer": "more",
+      "discount": "Discounted in-store pricing on 38 duty-ready models",
+      "savings": {"type": "varies", "amount": 0, "assumes": "Price shown at the dealer counter"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "no", "federal": "yes"},
+      "steps": ["Find a FIRSTLINE dealer on Springfield's site", "Bring agency photo ID (front and back)", "Pay the FIRSTLINE price at the counter; no rebate forms"],
+      "gotcha": "Federal, state and local officers, retired officers with credentials, firefighters and EMTs qualify. Certifications alone don't.",
+      "link": "https://www.springfield-armory.com/firstline/", "source": "official", "lastVerified": "2026-10-13"
+    },
+    {
+      "id": "govx", "brand": "GovX Tickets", "category": "Sports & events", "layer": "more",
+      "discount": "Special pricing on MLB, NBA and other event tickets",
+      "savings": {"type": "varies", "amount": 0, "assumes": "Depends on the game and team"},
+      "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "yes"},
+      "steps": ["Create a free GovX account", "Verify your status", "Search your team and buy through GovX"],
+      "gotcha": "Only partner teams. Compare against the box office price before you buy.",
+      "link": "https://www.officer.com/command-hq/supplies-services/press-release/12329972/govx-govxcom-partners-with-16-mlb-teams-to-offer-exclusively-priced-tickets-to-military-and-first-responders", "source": "secondary", "lastVerified": "2026-10-13"
+    }
+  ]
+}

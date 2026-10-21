@@ -1,0 +1,241 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<link rel="icon" href="icon.svg">
+<link rel="apple-touch-icon" href="icon.svg">
+<title>Already Paying</title>
+<meta name="theme-color" content="#14213a">
+<link rel="manifest" href="manifest.json">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700&family=Public+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600&display=swap">
+<style>
+/* Layout: one phone column — roll call (role), tiles by bill, a sticky tally bar, then claim cards. Reflective-tape amber on duty-navy. */
+:root{
+  --bg:#f3f5f8; --surface:#ffffff; --ink:#14213a; --muted:#5a6578; --line:#d7dce5;
+  --accent:#e8a317; --accent-ink:#14213a; --sel:#14213a; --sel-ink:#ffffff;
+  --yes:#1d7a46; --yes-bg:#e3f3ea; --no:#b3261e; --no-bg:#fbe7e5; --chk:#7a5a00; --chk-bg:#fbf1d7;
+  --f-display:"Barlow Condensed","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Public Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-num:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#0e1626; --surface:#162238; --ink:#e8edf5; --muted:#9aa6ba; --line:#2a3852;
+  --accent:#f2b73a; --accent-ink:#0e1626; --sel:#f2b73a; --sel-ink:#0e1626;
+  --yes:#6fd39b; --yes-bg:#173827; --no:#ff8a80; --no-bg:#3d1a1a; --chk:#f2cf6b; --chk-bg:#3a2f12; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0e1626; --surface:#162238; --ink:#e8edf5; --muted:#9aa6ba; --line:#2a3852;
+  --accent:#f2b73a; --accent-ink:#0e1626; --sel:#f2b73a; --sel-ink:#0e1626;
+  --yes:#6fd39b; --yes-bg:#173827; --no:#ff8a80; --no-bg:#3d1a1a; --chk:#f2cf6b; --chk-bg:#3a2f12; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.45;margin:0}
+.wrap{max-width:640px;margin:0 auto;padding-inline:16px;padding-block:20px 140px;display:grid;gap:28px}
+header{display:grid;gap:6px}
+.tape{height:8px;border-radius:2px;background:repeating-linear-gradient(135deg,var(--accent) 0 14px,var(--ink) 14px 28px);opacity:.9}
+h1{font-family:var(--f-display);font-weight:700;font-size:2.6rem;line-height:1;letter-spacing:.01em;margin:10px 0 0;text-transform:uppercase}
+.lede{margin:0;color:var(--muted);max-width:34em}
+h2{font-family:var(--f-display);font-weight:700;font-size:1.35rem;text-transform:uppercase;letter-spacing:.04em;margin:0}
+.step{display:grid;gap:12px}
+.step .hint{margin:0;color:var(--muted);font-size:.92rem}
+.roles{display:flex;flex-wrap:wrap;gap:8px}
+button{font:inherit;color:inherit;cursor:pointer}
+button:focus-visible,a:focus-visible,input:focus-visible+span{outline:3px solid var(--accent);outline-offset:2px}
+.chip{border:2px solid var(--line);background:var(--surface);border-radius:999px;padding:9px 16px;font-weight:600;min-height:44px}
+.chip[aria-pressed="true"]{background:var(--sel);color:var(--sel-ink);border-color:var(--sel)}
+.toggle{display:flex;align-items:center;gap:10px;font-weight:600}
+.toggle input{width:22px;height:22px;accent-color:var(--ink)}
+.cat{display:grid;gap:8px}
+.cat h3{margin:0;font-size:.78rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}
+.tile{min-height:56px;border:2px solid var(--line);background:var(--surface);border-radius:10px;padding:10px 12px;text-align:left;font-weight:600;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.tile[aria-pressed="true"]{border-color:var(--sel);background:var(--sel);color:var(--sel-ink)}
+.tile .mark{width:20px;height:20px;border-radius:50%;border:2px solid currentColor;flex:none;display:grid;place-items:center;font-size:.8rem;opacity:.55}
+.tile[aria-pressed="true"] .mark{opacity:1}
+.more{justify-self:start;background:none;border:2px dashed var(--line);border-radius:10px;padding:12px 16px;font-weight:600;min-height:48px}
+.example{font-size:.85rem;background:var(--chk-bg);color:var(--chk);padding:8px 12px;border-radius:8px;margin:0}
+.tally{position:fixed;left:0;right:0;bottom:0;background:var(--ink);color:var(--bg);padding:12px 16px calc(12px + env(safe-area-inset-bottom,0px));z-index:5}
+.tally-in{max-width:640px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.big{font-family:var(--f-num);font-weight:600;font-size:1.7rem;line-height:1;font-variant-numeric:tabular-nums}
+.big small{font-family:var(--f-body);font-size:.8rem;font-weight:500;opacity:.8}
+.sub{font-size:.82rem;opacity:.85;margin-top:4px}
+.go{background:var(--accent);color:var(--accent-ink);border:0;border-radius:10px;padding:12px 16px;font-weight:700;min-height:48px}
+.results{display:grid;gap:12px}
+.empty{color:var(--muted);margin:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:16px;display:grid;gap:10px;min-width:0}
+.card.off{opacity:.7}
+.card-top{display:flex;justify-content:space-between;gap:12px;align-items:baseline;flex-wrap:wrap}
+.card h4{margin:0;font-size:1.08rem}
+.amt{font-family:var(--f-num);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.disc{margin:0}
+.assume{margin:0;font-size:.82rem;color:var(--muted)}
+.elig{display:flex;flex-wrap:wrap;gap:6px}
+.pill{font-size:.78rem;font-weight:700;padding:4px 9px;border-radius:999px}
+.pill.yes{background:var(--yes-bg);color:var(--yes)}
+.pill.no{background:var(--no-bg);color:var(--no)}
+.pill.check{background:var(--chk-bg);color:var(--chk)}
+.card ol{margin:0;padding-left:1.25em;display:grid;gap:4px}
+.gotcha{margin:0;font-size:.9rem;border-left:4px solid var(--accent);padding-left:10px}
+.foot{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;font-size:.82rem;color:var(--muted);align-items:center}
+.foot a{color:var(--ink);font-weight:600}
+.stamp{font-family:var(--f-num);letter-spacing:.02em}
+.stamp.old{color:var(--no)}
+.note{font-size:.85rem;color:var(--muted);margin:0}
+.reset{background:none;border:0;text-decoration:underline;color:var(--muted);padding:0;justify-self:start}
+@media (prefers-reduced-motion:no-preference){.tile,.chip{transition:background .12s,color .12s,border-color .12s}}
+</style>
+</head>
+<body>
+
+
+<div class="wrap">
+  <header>
+    <div class="tape" aria-hidden="true"></div>
+    <h1>Already Paying</h1>
+    <p class="lede">Tap the bills you already pay. See which ones give first responders a discount, how much it's worth, and exactly how to claim it.</p>
+  </header>
+
+  <section class="step" aria-labelledby="h-role">
+    <h2 id="h-role">1 · Your job</h2>
+    <div class="roles" id="roles" role="group" aria-label="Your role"></div>
+    <label class="toggle"><input type="checkbox" id="fed"><span>I work for a federal agency</span></label>
+  </section>
+
+  <section class="step" aria-labelledby="h-bills">
+    <h2 id="h-bills">2 · What you pay for</h2>
+    <p class="example" id="exampleNote" hidden>Example picks shown. Tap tiles to make it yours.</p>
+    <div id="everyday" class="step"></div>
+    <button class="more" id="moreBtn" aria-expanded="false">Show more: vehicles, gear, firearms, tickets</button>
+    <div id="more" class="step" hidden></div>
+  </section>
+
+  <section class="step" aria-labelledby="h-deals" id="dealsSec">
+    <h2 id="h-deals">3 · Your deals</h2>
+    <div class="results" id="results"></div>
+    <p class="note" id="assumptions"></p>
+    <p class="note">Nothing you tap leaves this phone. No account, no badge number, no tracking.</p>
+    <button class="reset" id="reset">Start over</button>
+  </section>
+</div>
+
+<div class="tally" role="status" aria-live="polite">
+  <div class="tally-in">
+    <div>
+      <div class="big" id="tYear">$0 <small>a year</small></div>
+      <div class="sub" id="tSub">Tap your bills to see savings</div>
+    </div>
+    <button class="go" id="goBtn">See my deals</button>
+  </div>
+</div>
+
+<script>
+const EMBEDDED = {"updated": "2026-10-13", "assumptions": "Savings use conservative typical bills: phone $120/mo, car insurance $2,000/yr, gear $200-300/yr. Your real number depends on your bill.", "deals": [{"id": "verizon", "brand": "Verizon Wireless", "category": "Phone", "layer": "everyday", "discount": "10% off personal Unlimited lines; 25% off accessories online", "savings": {"type": "yearly", "amount": 144, "assumes": "$120/mo plan × 10%"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "check"}, "steps": ["Open Verizon's first responder page and tap Check eligibility", "Verify with ID.me (badge photo, pay stub or agency letter)", "Discount shows on your bill in 1–2 cycles"], "gotcha": "Active, retired and volunteer responders qualify. Can't stack with military, nurse or teacher discounts. May re-verify.", "link": "https://www.verizon.com/featured/first-responders/", "source": "official", "lastVerified": "2026-10-13"}, {"id": "att", "brand": "AT&T Wireless (FirstNet & Family)", "category": "Phone", "layer": "everyday", "discount": "10–20% off unlimited lines, depending on plan", "savings": {"type": "yearly", "amount": 144, "assumes": "$120/mo plan × 10%"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "yes", "family": "yes", "federal": "yes"}, "steps": ["Check eligibility on AT&T's FirstNet & Family page", "One person on the account must be a verified FirstNet user", "Credits start within about 3 bills"], "gotcha": "Needs a FirstNet-capable phone and SIM. Federal, career and volunteer responders qualify. Retirees use AT&T's separate retired-responder offer.", "link": "https://www.att.com/poeportal/selfassessment/firstresponders", "source": "official", "lastVerified": "2026-10-13"}, {"id": "tmobile", "brand": "T-Mobile", "category": "Phone", "layer": "everyday", "discount": "First Responder pricing on Magenta plans (about 6–10% per comparison sites)", "savings": {"type": "yearly", "amount": 86, "assumes": "$120/mo plan × 6%"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "yes", "family": "no", "federal": "no"}, "steps": ["Log in to T-Mobile.com or T-Life", "Profile → First Responder Verification", "Upload an ID, recent pay stub or agency letter if asked"], "gotcha": "State and local only: federal agencies are not eligible. Verify within 45 days or the line can go up to $20/mo. Re-verify every year.", "link": "https://www.t-mobile.com/support/plans-features/first-responder-verification", "source": "official", "lastVerified": "2026-10-13"}, {"id": "fios", "brand": "Verizon Fios Home Internet", "category": "Internet", "layer": "everyday", "discount": "First responder pricing, Fios 300 from about $26/mo with AutoPay", "savings": {"type": "varies", "amount": 0, "assumes": "Depends on your area and current plan"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "check"}, "steps": ["Open Verizon's first responder page", "Verify with ID.me", "Pick a Fios plan; the discount applies at the last step of the order"], "gotcha": "Only where Fios is available. A $99 setup fee may apply.", "link": "https://www.verizon.com/featured/first-responders/", "source": "official", "lastVerified": "2026-10-13"}, {"id": "geico", "brand": "GEICO", "category": "Car insurance", "layer": "everyday", "fedOnly": true, "discount": "Federal employee discount and premium reductions", "savings": {"type": "varies", "amount": 0, "assumes": "GEICO doesn't publish the amount; it varies by state"}, "qualifies": {"le": "no", "fire": "no", "ems": "no", "dispatch": "no", "family": "check", "federal": "yes"}, "steps": ["Call GEICO or open your policy online", "Say: \"I'm a federal employee. Please add the federal employee discount.\"", "Ask them to re-quote with it applied"], "gotcha": "For federal employees, not state or local. Ask whether it stacks with your other discounts.", "link": "https://www.geico.com/save/discounts/", "source": "official", "lastVerified": "2026-10-13"}, {"id": "liberty", "brand": "Liberty Mutual", "category": "Car insurance", "layer": "everyday", "discount": "Up to 12% through IAFF and FOP partnerships", "savings": {"type": "yearly", "amount": 100, "assumes": "$2,000/yr policy × 5%"}, "qualifies": {"le": "check", "fire": "check", "ems": "check", "dispatch": "check", "family": "check", "federal": "check"}, "steps": ["Call Liberty Mutual or your agent", "Ask for the first responder or FOP / IAFF member discount", "Have your membership info ready"], "gotcha": "Tied to union or FOP membership. Amount from a comparison site, not Liberty Mutual's own page.", "link": "https://www.thezebra.com/car-insurance-first-responders/", "source": "secondary", "lastVerified": "2026-10-13"}, {"id": "farmers", "brand": "Farmers", "category": "Car insurance", "layer": "everyday", "discount": "About 8% for members of approved occupation groups", "savings": {"type": "yearly", "amount": 160, "assumes": "$2,000/yr policy × 8%"}, "qualifies": {"le": "check", "fire": "check", "ems": "check", "dispatch": "check", "family": "check", "federal": "check"}, "steps": ["Call your Farmers agent", "Ask whether your agency or job is an approved affinity group", "Ask for a re-quote with the discount"], "gotcha": "Group lists vary by state. Amount from a comparison site.", "link": "https://www.autoinsurance.org/first-responder-auto-insurance-discount", "source": "secondary", "lastVerified": "2026-10-13"}, {"id": "aaa", "brand": "AAA Insurance", "category": "Car insurance", "layer": "everyday", "discount": "Up to about 15% for first responders, depending on your club", "savings": {"type": "yearly", "amount": 100, "assumes": "$2,000/yr policy × 5%"}, "qualifies": {"le": "check", "fire": "check", "ems": "check", "dispatch": "check", "family": "check", "federal": "check"}, "steps": ["Call your regional AAA club", "Ask for the first responder insurance discount", "Ask whether it stacks with your member discount"], "gotcha": "Each AAA club sets its own discounts. Amount from a comparison site.", "link": "https://www.autoinsurance.org/first-responder-auto-insurance-discount", "source": "secondary", "lastVerified": "2026-10-13"}, {"id": "simplisafe", "brand": "SimpliSafe", "category": "Home security", "layer": "everyday", "discount": "50% off a new system (Protectors Program)", "savings": {"type": "onetime", "amount": 150, "assumes": "$300 system × 50%"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "check"}, "steps": ["Go to SimpliSafe.com/Protectors", "Pick your status and tap Receive 50% Off", "Verify with VerifyPass and use the one-time code at checkout"], "gotcha": "New system purchases only. Monitoring plan isn't discounted. Can't combine with other promos.", "link": "https://support.simplisafe.com/articles/orders-warranty/simplisafe-protectors-program/6500658dbe68590665e6bcef", "source": "official", "lastVerified": "2026-10-13"}, {"id": "ring", "brand": "Ring", "category": "Home security", "layer": "everyday", "discount": "20% off select Ring.com purchases", "savings": {"type": "onetime", "amount": 40, "assumes": "$200 order × 20%"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "check"}, "steps": ["Open Ring's first responder discount page", "Verify your status", "Buy on Ring.com with the discount applied"], "gotcha": "Ring's page doesn't say the subscription plan is covered. Can't combine with other Ring discounts.", "link": "https://ring.com/collections/ring-military-first-responder-student-teacher-discount", "source": "official", "lastVerified": "2026-10-13"}, {"id": "arlo", "brand": "Arlo", "category": "Home security", "layer": "everyday", "discount": "25% off for first responders, verified with ID.me", "savings": {"type": "yearly", "amount": 30, "assumes": "$120/yr subscription × 25%"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "check"}, "steps": ["Open Arlo's discounts page", "Verify with ID.me", "Ask support to apply it to an existing subscription if needed"], "gotcha": "Confirmed by Arlo staff on its forum, not its main page. Some users report trouble getting it on existing subscriptions.", "link": "https://community.arlo.com/t5/Arlo-Smart/Arlo-discounts/m-p/1901095", "source": "secondary", "lastVerified": "2026-10-13"}, {"id": "stellantis", "brand": "Dodge · Jeep · Ram", "category": "Vehicle", "layer": "more", "discount": "$500 off select new Dodge, Jeep and Ram models", "savings": {"type": "onetime", "amount": 500, "assumes": "Flat $500 when you buy or lease"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "yes", "family": "check", "federal": "yes"}, "steps": ["Open the Stellantis first responder page and tap Get Authorization Number", "Verify through their third-party service", "Give the number to any franchised dealer"], "gotcha": "Select models only. Federal LEOs and 911 dispatchers are named as eligible. Spouses only in some cases.", "link": "https://dodge.com/incentives/first-responder.html", "source": "official", "lastVerified": "2026-10-13"}, {"id": "gm", "brand": "Chevy · GMC · Buick · Cadillac", "category": "Vehicle", "layer": "more", "discount": "First Responder Discount on select vehicles, plus up to 20% off OnStar", "savings": {"type": "varies", "amount": 0, "assumes": "GM doesn't list the vehicle amount"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "check"}, "steps": ["Confirm eligibility at gmfirstresponderdiscount.com", "Get your authorization number", "Bring it to the dealer; push the blue OnStar button for that discount"], "gotcha": "Select vehicles only. Check the amount with the dealer before you negotiate.", "link": "https://onstar.com/public-safety/honored-to-serve", "source": "official", "lastVerified": "2026-10-13"}, {"id": "ford", "brand": "Ford", "category": "Vehicle", "layer": "more", "discount": "$500 Bonus Cash on eligible Ford vehicles", "savings": {"type": "onetime", "amount": 500, "assumes": "Flat $500 when you buy"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "no", "federal": "check"}, "steps": ["Register at fordspecialoffer.com/firstresponders", "Verify instantly through First Responder ID", "Give the certificate number to the dealer"], "gotcha": "Active first responders only, not retirees. Source is a police association page, so confirm with the dealer.", "link": "https://napo.org/membership/ford-rebate-program", "source": "secondary", "lastVerified": "2026-10-13"}, {"id": "samsung", "brand": "Samsung", "category": "Phones & TVs", "layer": "more", "discount": "Up to 30% off phones, TVs and appliances", "savings": {"type": "onetime", "amount": 80, "assumes": "$800 phone × 10% (conservative)"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "no", "federal": "yes"}, "steps": ["Open Samsung's first responder offer page", "Create a Samsung Account and verify with ID.me (or a .gov email)", "Shop signed in; discount shows at checkout"], "gotcha": "Limit of 2 products per category per year. Stacks with public sales.", "link": "https://www.samsung.com/us/shop/offer-program/first-responders/", "source": "official", "lastVerified": "2026-10-13"}, {"id": "whoop", "brand": "WHOOP", "category": "Fitness", "layer": "more", "discount": "10% off annual or 24-month memberships", "savings": {"type": "onetime", "amount": 20, "assumes": "$200 membership × 10%"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "no", "federal": "check"}, "steps": ["Start a new prepaid annual or 24-month membership", "Verify with ID.me at checkout"], "gotcha": "New members only. Not for monthly plans or renewals.", "link": "https://www.community.whoop.com/t/are-there-any-discounts-for-military-servicemembers-or-first-responders/104", "source": "secondary", "lastVerified": "2026-10-13"}, {"id": "nike", "brand": "Nike", "category": "Apparel & boots", "layer": "more", "discount": "10% off most items online and in the Nike App", "savings": {"type": "yearly", "amount": 30, "assumes": "$300/yr × 10%"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "no", "federal": "check"}, "steps": ["Sign in as a Nike Member", "Verify with SheerID (name, agency, status)", "Use the single-use code at checkout"], "gotcha": "Online only, first $500 of an order, one code every 7 days. Excludes SNKRS launches and gift cards.", "link": "https://www.nike.com/help/a/first-responder-discount", "source": "official", "lastVerified": "2026-10-13"}, {"id": "underarmour", "brand": "Under Armour", "category": "Apparel & boots", "layer": "more", "discount": "About 20% off, with seasonal 40% events", "savings": {"type": "yearly", "amount": 40, "assumes": "$200/yr × 20%"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "check"}, "steps": ["Open Under Armour's first responder page", "Verify with ID.me", "Discount applies at checkout"], "gotcha": "Amount changes by season. Reported by deal sites; couldn't open UA's own page to confirm.", "link": "https://www.westfield.com/en/united-states/montgomery/retailers/offers/under-armour-20percent-off-discount-military-first-responders-and-healthcare-workers/200325", "source": "secondary", "lastVerified": "2026-10-13"}, {"id": "springfield", "brand": "Springfield Armory FIRSTLINE", "category": "Firearms & ammo", "layer": "more", "discount": "Discounted in-store pricing on 38 duty-ready models", "savings": {"type": "varies", "amount": 0, "assumes": "Price shown at the dealer counter"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "no", "federal": "yes"}, "steps": ["Find a FIRSTLINE dealer on Springfield's site", "Bring agency photo ID (front and back)", "Pay the FIRSTLINE price at the counter; no rebate forms"], "gotcha": "Federal, state and local officers, retired officers with credentials, firefighters and EMTs qualify. Certifications alone don't.", "link": "https://www.springfield-armory.com/firstline/", "source": "official", "lastVerified": "2026-10-13"}, {"id": "govx", "brand": "GovX Tickets", "category": "Sports & events", "layer": "more", "discount": "Special pricing on MLB, NBA and other event tickets", "savings": {"type": "varies", "amount": 0, "assumes": "Depends on the game and team"}, "qualifies": {"le": "yes", "fire": "yes", "ems": "yes", "dispatch": "check", "family": "check", "federal": "yes"}, "steps": ["Create a free GovX account", "Verify your status", "Search your team and buy through GovX"], "gotcha": "Only partner teams. Compare against the box office price before you buy.", "link": "https://www.officer.com/command-hq/supplies-services/press-release/12329972/govx-govxcom-partners-with-16-mlb-teams-to-offer-exclusively-priced-tickets-to-military-and-first-responders", "source": "secondary", "lastVerified": "2026-10-13"}]};
+const ROLES=[["le","Law enforcement"],["fire","Fire"],["ems","EMS"],["dispatch","Dispatch"],["family","Family of one"]];
+const LABEL={le:"Sworn",fire:"Fire",ems:"EMS",dispatch:"Dispatch",family:"Family",federal:"Federal"};
+const KEY="already-paying-v0";
+let data=EMBEDDED, state=load();
+
+function load(){
+  try{const s=JSON.parse(localStorage.getItem(KEY));if(s&&s.role)return {...s,example:false};}catch(e){}
+  return {role:"le",fed:false,picked:["verizon","geico","simplisafe","stellantis"],example:true,more:false};
+}
+function save(){try{localStorage.setItem(KEY,JSON.stringify({role:state.role,fed:state.fed,picked:state.picked,more:state.more}));}catch(e){}}
+const $=id=>document.getElementById(id);
+const money=n=>"$"+Math.round(n).toLocaleString("en-US");
+
+function eligible(d){
+  const q=d.qualifies, r=q[state.role];
+  if(!state.fed) return d.fedOnly?"no":r;
+  const f=q.federal;
+  if(f==="no") return "no";
+  if(d.fedOnly) return "yes";
+  if(r==="no") return "no";
+  if(f==="check"&&r==="yes") return "check";
+  return r;
+}
+function daysOld(iso){return Math.floor((Date.now()-new Date(iso+"T12:00:00"))/864e5);}
+
+function renderRoles(){
+  $("roles").innerHTML=ROLES.map(([k,l])=>`<button class="chip" id="role-${k}" data-role="${k}" aria-pressed="${state.role===k}">${l}</button>`).join("");
+  $("fed").checked=state.fed;
+}
+function renderTiles(){
+  for(const layer of ["everyday","more"]){
+    const cats={};
+    data.deals.filter(d=>d.layer===layer).forEach(d=>(cats[d.category]??=[]).push(d));
+    $(layer).innerHTML=Object.entries(cats).map(([c,ds])=>`<div class="cat"><h3>${c}</h3><div class="tiles">${
+      ds.map(d=>`<button class="tile" id="tile-${d.id}" data-id="${d.id}" aria-pressed="${state.picked.includes(d.id)}"><span>${d.brand}</span><span class="mark" aria-hidden="true">${state.picked.includes(d.id)?"✓":""}</span></button>`).join("")
+    }</div></div>`).join("");
+  }
+  $("more").hidden=!state.more;
+  $("moreBtn").setAttribute("aria-expanded",state.more);
+  $("moreBtn").textContent=state.more?"Hide vehicles, gear, firearms, tickets":"Show more: vehicles, gear, firearms, tickets";
+  $("exampleNote").hidden=!state.example;
+}
+function amountText(d){
+  const s=d.savings;
+  if(s.type==="yearly") return money(s.amount)+"/yr";
+  if(s.type==="onetime") return money(s.amount)+" once";
+  return "Ask for price";
+}
+function renderResults(){
+  const picked=data.deals.filter(d=>state.picked.includes(d.id));
+  let year=0, once=0, maybe=0, count=0;
+  const rows=picked.map(d=>({d,e:eligible(d)})).sort((a,b)=>{
+    const rank=x=>x.e==="no"?2:(x.e==="yes"&&x.d.source==="official"?0:1);
+    return rank(a)-rank(b)||b.d.savings.amount-a.d.savings.amount;
+  });
+  rows.forEach(({d,e})=>{
+    if(e==="no")return; count++;
+    const sure=e==="yes"&&d.source==="official";
+    if(sure&&d.savings.type==="yearly") year+=d.savings.amount;
+    else if(sure&&d.savings.type==="onetime") once+=d.savings.amount;
+    else maybe+=d.savings.amount;
+  });
+  $("tYear").innerHTML=`${money(year)} <small>a year, confirmed</small>`;
+  const bits=[];
+  if(once) bits.push(`+ ${money(once)} one-time`);
+  if(maybe) bits.push(`+ up to ${money(maybe)} to check`);
+  $("tSub").textContent=picked.length?(bits.join(" · ")||`${count} deal${count===1?"":"s"} found`):"Tap your bills to see savings";
+
+  if(!picked.length){$("results").innerHTML=`<p class="empty">Tap at least one bill above. Start with your phone carrier and car insurance.</p>`;return;}
+  $("results").innerHTML=rows.map(({d,e})=>{
+    const old=daysOld(d.lastVerified)>90;
+    const chips=Object.keys(LABEL).map(k=>{const v=d.qualifies[k];return `<span class="pill ${v}">${LABEL[k]} ${v==="yes"?"✓":v==="no"?"✕":"?"}</span>`}).join("");
+    const status=e==="no"?`<span class="pill no">You likely don't qualify</span>`:e==="check"?`<span class="pill check">Confirm you qualify</span>`:`<span class="pill yes">You qualify</span>`;
+    return `<article class="card${e==="no"?" off":""}">
+      <div class="card-top"><h4>${d.brand}</h4><span class="amt">${amountText(d)}</span></div>
+      <p class="disc">${d.discount}</p>
+      <p class="assume">Estimate: ${d.savings.assumes}</p>
+      <div class="elig">${status}${chips}</div>
+      <ol>${d.steps.map(s=>`<li>${s}</li>`).join("")}</ol>
+      <p class="gotcha"><strong>Watch for:</strong> ${d.gotcha}</p>
+      <div class="foot"><a href="${d.link}" target="_blank" rel="noopener">${d.source==="official"?"Official page":"Source"} ↗</a>
+      <span class="stamp${old?" old":""}">${d.source==="official"?"Checked":"Reported"} ${d.lastVerified}${old?" · may be outdated":""}</span></div>
+    </article>`;
+  }).join("");
+  $("assumptions").textContent=data.assumptions+" \"Confirmed\" counts only deals from the company's own page where your role is listed.";
+}
+function renderAll(){renderRoles();renderTiles();renderResults();}
+
+document.addEventListener("click",ev=>{
+  const r=ev.target.closest("[data-role]"), t=ev.target.closest("[data-id]");
+  if(r){state.role=r.dataset.role;state.example=false;save();renderRoles();renderResults();}
+  else if(t){const id=t.dataset.id;
+    if(state.example){state.example=false;}
+    state.picked=state.picked.includes(id)?state.picked.filter(x=>x!==id):[...state.picked,id];
+    save();renderTiles();renderResults();}
+});
+$("fed").addEventListener("change",e=>{state.fed=e.target.checked;state.example=false;save();renderResults();});
+$("moreBtn").addEventListener("click",()=>{state.more=!state.more;save();renderTiles();});
+$("goBtn").addEventListener("click",()=>$("dealsSec").scrollIntoView({behavior:matchMedia("(prefers-reduced-motion: reduce)").matches?"auto":"smooth"}));
+$("reset").addEventListener("click",()=>{try{localStorage.removeItem(KEY)}catch(e){};state={role:"le",fed:false,picked:[],example:false,more:false};renderAll();window.scrollTo(0,0);});
+
+renderAll();
+// On GitHub Pages: pull the latest deals.json and register offline support. Both are skipped quietly where unsupported.
+fetch("deals.json",{cache:"no-cache"}).then(r=>r.ok?r.json():null).then(j=>{if(j&&j.deals){data=j;renderAll();}}).catch(()=>{});
+if("serviceWorker" in navigator){try{navigator.serviceWorker.register("sw.js").catch(()=>{});}catch(e){}}
+</script>
+
+</body>
+</html>
